@@ -1,0 +1,107 @@
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class BankingApp {
+    private double balance = 0;
+    private String accountHolder = "John Doe";
+    private String accountNumber = "1234567890";
+    private JTextArea transactionHistory;
+
+    public BankingApp() {
+        JFrame frame = new JFrame("Banking Application");
+        frame.setSize(500, 500);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
+
+        // Account Details
+        JLabel accountHolderLabel = new JLabel("Account Holder: " + accountHolder);
+        accountHolderLabel.setBounds(50, 20, 300, 30);
+        frame.add(accountHolderLabel);
+
+        JLabel accountNumberLabel = new JLabel("Account Number: " + accountNumber);
+        accountNumberLabel.setBounds(50, 50, 300, 30);
+        frame.add(accountNumberLabel);
+
+        JLabel balanceLabel = new JLabel("Current Balance: ₹" + balance);
+        balanceLabel.setBounds(50, 80, 300, 30);
+        frame.add(balanceLabel);
+
+        JLabel amountLabel = new JLabel("Enter Amount:");
+        amountLabel.setBounds(50, 130, 100, 30);
+        frame.add(amountLabel);
+
+        JTextField amountField = new JTextField();
+        amountField.setBounds(150, 130, 150, 30);
+        frame.add(amountField);
+
+        JButton depositButton = new JButton("Deposit");
+        depositButton.setBounds(50, 180, 100, 30);
+        frame.add(depositButton);
+
+        JButton withdrawButton = new JButton("Withdraw");
+        withdrawButton.setBounds(200, 180, 100, 30);
+        frame.add(withdrawButton);
+
+        // Transaction History
+        JLabel historyLabel = new JLabel("Transaction History:");
+        historyLabel.setBounds(50, 230, 200, 30);
+        frame.add(historyLabel);
+
+        transactionHistory = new JTextArea();
+        transactionHistory.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(transactionHistory);
+        scrollPane.setBounds(50, 260, 380, 150);
+        frame.add(scrollPane);
+
+        depositButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    double amount = Double.parseDouble(amountField.getText());
+                    if (amount > 0) {
+                        balance += amount;
+                        balanceLabel.setText("Current Balance: ₹" + balance);
+                        JOptionPane.showMessageDialog(frame, "₹" + amount + " deposited successfully!");
+                        addTransaction("Deposited: ₹" + amount);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Amount must be positive!");
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid input! Please enter a valid amount.");
+                }
+            }
+        });
+
+        withdrawButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    double amount = Double.parseDouble(amountField.getText());
+                    if (amount > 0 && amount <= balance) {
+                        balance -= amount;
+                        balanceLabel.setText("Current Balance: ₹" + balance);
+                        JOptionPane.showMessageDialog(frame, "₹" + amount + " withdrawn successfully!");
+                        addTransaction("Withdrew: ₹" + amount);
+                    } else if (amount > balance) {
+                        JOptionPane.showMessageDialog(frame, "Insufficient balance!");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Amount must be positive!");
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid input! Please enter a valid amount.");
+                }
+            }
+        });
+
+        frame.setVisible(true);
+    }
+
+    private void addTransaction(String transaction) {
+        transactionHistory.append(transaction + "\n");
+    }
+
+    public static void main(String[] args) {
+        new BankingApp();
+    }
+}
